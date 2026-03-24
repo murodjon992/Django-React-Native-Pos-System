@@ -1,0 +1,17 @@
+# Django
+venv/
+env/
+db.sqlite3
+*.pyc
+__pycache__/
+
+# React Native
+pos-mobile/node_modules/
+pos-mobile/.expo/
+pos-mobile/android/build/
+pos-mobile/ios/build/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
