@@ -46,17 +46,28 @@ class AccessoryInventory(models.Model):
     def __str__(self):
         return self.product.name
 
+
 class StocLog(models.Model):
     ACTION = (
-    ("add","Add"),
-    ("sale","Sale"),
-    ("return","Return"),
+        ("add", "Add"),
+        ("sale", "Sale"),
+        ("return", "Return"),
     )
+    PAYMENT_METHODS = (
+        ('cash', 'Naqd'),
+        ('card', 'Plastik'),
+        ('debt', 'Nasiya'),
+        ('none', 'Noma’lum/Ombor'),  # Add yoki Return amallari uchun
+    )
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    price_at_time = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     action = models.CharField(choices=ACTION, max_length=10)
+    payment_method = models.CharField(choices=PAYMENT_METHODS, max_length=10, default='none')
     created_at = models.DateTimeField(auto_now_add=True)
-    note = models.TextField()
+    note = models.TextField(blank=True)
 
     def __str__(self):
-        return self.product.name
+        return f"{self.product.name} - {self.action} ({self.payment_method})"
+

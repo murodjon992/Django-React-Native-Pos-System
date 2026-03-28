@@ -17,14 +17,18 @@ export default function Cart() {
   }, 0);
 
   const handleError = (error) => {
-    if (error.response && error.response.data && error.response.data.error) {
-      Alert.alert("Xatolik", error.response.data.error);
-    } else {
-      Alert.alert("Xatolik", "Server bilan bog'lanishda xato yuz berdi.");
-    }
+    console.log('toliq xato:', error);
+    
+   const serverErrorMessage = error.response?.data?.error;
+  
+  if (serverErrorMessage) {
+    Alert.alert("Xatolik", serverErrorMessage);
+  } else {
+    Alert.alert("Xatolik", "Server bilan bog'lanishda muammo yuz berdi.");
+  }
   };
 
-  const sell = async () => {
+  const sell = async (method = 'cash') => {
     if (cart.length === 0) {
       Alert.alert("Diqqat!", "Savat bo'sh. Avval mahsulot scan qiling.");
       return;
@@ -35,11 +39,20 @@ export default function Cart() {
         quantity: Number(item.quantity),
       }));
 
-      await API.post("sale/", { items: salesData });
+      const response =  await API.post("sale/", { 
+        items: salesData,
+        payment_method: method
+      });
 
       clearCart();
+     // SERVERDAN KELGAN WARNING'NI TEKSHIRAMIZ
+    if (response.data.warning) {
+      Alert.alert("Muvaffaqiyatli", `Sotuv bajarildi.\n\n⚠️ ${response.data.warning}`);
+    } else {
       Alert.alert("Tabrik", "Sotuv muvaffaqiyatli yakunlandi!");
+    }
     } catch (error) {
+      console.log('sotuv xatosi', error.response?.data || error.message);
       handleError(error);
     }
   };
@@ -67,7 +80,8 @@ export default function Cart() {
       clearCart();
       Alert.alert("Saqlandi", "Nasiya savdo muvaffaqiyatli qayd etildi!");
     } catch (error) {
-      handleError(error);
+           handleError(error);
+      
     }
   };
 
@@ -109,7 +123,7 @@ export default function Cart() {
 
         {/* Tugmalar */}
         <View style={{ marginTop: 10, gap: 15, marginBottom: 40 }}>
-          <TouchableOpacity onPress={sell} style={[styles.btn, { backgroundColor: "#28a745" }]}>
+          <TouchableOpacity onPress={() => sell('cash')} style={[styles.btn, { backgroundColor: "#28a745" }]}>
             <Text style={styles.btnText}>SOTISH</Text>
           </TouchableOpacity>
 

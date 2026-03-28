@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect,useCallback } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator,Alert } from 'react-native';
 import API from "@/services/api";
 
 const InventoryScreen = () => {
@@ -7,12 +8,30 @@ const InventoryScreen = () => {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all'); // all, out, low
 
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchInventory(); // Ma'lumotni yuklash funksiyasi
+    }, [])
+  );
+
   const fetchInventory = async () => {
     try {
       setLoading(true);
       // Django API manzilingiz
      const res = await API.get(`/inventory`);
-      setData(res.data);
+     const {alerts,results} = res.data;
+      Alert.alert(
+        "DIQQAT!",
+        `Omborda ${alerts.out_of_stock} ta mahsulot tugadi va ${alerts.low_stock} ta mahsulot kam qoldi!`,
+        [{ text: "Ko'rish", onPress: () => console.log("Kam qolganlar sahifasiga o'tish") }]
+      );
+      setData(results);
+
+      // Alert mantiig'ini shu yerda chaqiring
+      if (response.data.alerts?.has_warning) {
+        Alert.alert("DIQQAT", "Zahira kamaydi!");
+      }
       
     } catch (error) {
       console.error("Xatolik:", error);

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, AccessoryInventory, Category,Customer,DebtLog
+from .models import Product, AccessoryInventory, Category,Customer,DebtLog,StocLog
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -52,3 +52,14 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['id', 'name', 'phone', 'total_debt','history']
+
+class DailySummarySerializer(serializers.ModelSerializer):
+    product_name = serializers.ReadOnlyField(source='product.name')
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StocLog
+        fields = ['id', 'product_name', 'quantity', 'price_at_time', 'total_price', 'payment_method', 'created_at']
+
+    def get_total_price(self, obj):
+        return obj.quantity * obj.price_at_time

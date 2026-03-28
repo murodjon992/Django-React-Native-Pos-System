@@ -63,9 +63,9 @@ export default function Dashboard() {
 
     <View style={{flexDirection:'row', justifyContent:'space-between', padding:20 }}>
       <TouchableOpacity style={styles.btn}
-        onPress={() => router.push("/(tabs)/cart")}>
-            <Ionicons name="cash" size={24} color="white" />
-        <Text  style={{color:'#fff',flexWrap:'wrap',textAlign:'center',paddingLeft:10}}>Qarzdorlar</Text>
+        onPress={() => router.push("/(tabs)/daily")}>
+            <Ionicons name="calendar" size={24} color="white" />
+        <Text  style={{color:'#fff',flexWrap:'wrap',textAlign:'center',paddingLeft:10}}>Kunlik Savdo</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.btn}

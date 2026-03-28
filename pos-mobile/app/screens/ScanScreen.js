@@ -1,4 +1,4 @@
-import { View,Alert,Vibration } from "react-native";
+import { View,Alert,Vibration,Text } from "react-native";
 import { CameraView } from "expo-camera";
 import { Audio } from 'expo-av'
 import { useContext, useState } from "react";
@@ -8,12 +8,12 @@ import API from "@/services/api";
 export default function ScanScreen() {
 
   const { addToCart } = useContext(CartContext);
-
+  
   const [scanned, setScanned] = useState(false);
   const playBeep = async () => {
     
     const { sound } = await Audio.Sound.createAsync(
-      require("@/assets/beep.mp3")
+      require("../../assets/beep.mp3")
     );
     
     await sound.playAsync();
@@ -55,8 +55,8 @@ export default function ScanScreen() {
         ...res.data,
         barcode: res.data.barcode || barcode
       }
-      
-      addToCart(completeProduct);
+
+      addToCart(completeProduct)
       playBeep();
       Vibration.vibrate(100);
     } else {
@@ -80,6 +80,56 @@ export default function ScanScreen() {
         style={{ flex:1 }}
         onBarcodeScanned={handleScan}
       />
+
+      <View style={styles.overlay}>
+  <View style={styles.topOverlay} />
+
+  <View style={styles.centerRow}>
+    <View style={styles.sideOverlay} />
+
+    <View style={styles.scanBox} />
+
+    <View style={styles.sideOverlay} />
+  </View>
+
+  <View style={styles.bottomOverlay} />
+</View>
+    
     </View>
+    
   );
 }
+const styles = {
+  overlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+
+  topOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+
+  bottomOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+
+  centerRow: {
+    flexDirection: "row",
+    height: 180, // 🔥 scanBox balandligiga mos
+  },
+
+  sideOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+
+  scanBox: {
+    width: 300,
+    height: 180, // 🔥 MUHIM (height berilmagan edi)
+    borderWidth: 2,
+    borderColor: "#00FF00",
+  },
+};
